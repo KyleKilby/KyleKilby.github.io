@@ -7,7 +7,7 @@
   baseMaps["Default"].addTo(map);
 
 // GET COUNTRY DATA
-  fetch('data/countries.geojson')
+  fetch('countries.geojson')
   .then(response => response.json())
   .then(data => {
 
