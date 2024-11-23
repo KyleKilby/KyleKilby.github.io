@@ -111,11 +111,8 @@
 //TISSUE ROUNDWORMS
     // Assign colours
     const getColorForRoundworm = (parasites) => {
-        if (parasites.includes("Wuchereria bancrofti") && parasites.includes("Dracunculus medinensis")) {return "#027d2d"}
         if (parasites.includes("Trichinella species")) {return "#662937";}
         if (parasites.includes("Dracunculus medinensis")) {return "#c28e00";}
-        if (parasites.includes("Wuchereria bancrofti")) {return "#0010a3";}
-        if (parasites.includes("Brugia species")) {return "#0010a3";}
         if (parasites.includes("Loa loa")) {return "#FD9DB1";} 
         if (parasites.includes("Onchocerca volvulus")) {return "#83FEE7";}  
         if (parasites.includes("Ancylostoma braziliense")) {return "#E86D07";} 
@@ -139,14 +136,12 @@
     RoundwormLegend.onAdd = function (map) {
     const div = L.DomUtil.create('div', 'info legend');
     const RoundwormColors = [
-        { species: "Lymphatic Filariasis", color: "#0010a3" },
         { species: "Dracunculus medinensis", color: "#c28e00" },
         { species: "Trichinella species", color: "#662937" },
         { species: "Loa loa", color: "#FD9DB1" },
         { species: "Onchocerca volvulus", color: "#83FEE7" },
         { species: "Ancylostoma braziliense", color: "#E86D07" },
         { species: "Toxocara species", color: "#DED8F8" },
-        { species: "LF + Dracunculus", color: "#027d2d" }
     ];
     div.innerHTML = '<h4>Tissue Roundworms</h4>';
     RoundwormColors.forEach(entry => {
@@ -205,7 +200,7 @@
   const schistoColors = [
       { species: "Schistosoma mansoni", color: "#0010a3" },
       { species: "Schistosoma haematobium", color: "#c28e00" },
-      { species: "Both mansoni & haematobium", color: "#027d2d" },
+      { species: "S. mansoni & S. haematobium", color: "#027d2d" },
       { species: "Schistosoma mekongi", color: "#ff3842" },
       { species: "Schistosoma japonicum", color: "#460f5c" }
   ];
@@ -237,6 +232,63 @@
   map.removeControl(schistoLegend);
   });
 
+//Lymphatic Filariasis
+    // Assign colours
+    const getColorForLF = (parasites) => {
+      if (parasites.includes("Brugia malayi") && parasites.includes("Wuchereria bancrofti")) {return "#027d2d"}
+      if (parasites.includes("Wuchereria bancrofti")) {return "#c28e00";}
+      if (parasites.includes("Brugia malayi")) {return "#0010a3";}
+      if (parasites.includes("Brugia timori")) {return "#0010a3";}
+      return "#fafafa"; // Default
+  };
+
+  // Define Layer Style
+  const styleByLF = (feature) => {
+    const parasites = feature.properties.endemicParasites || [];
+    return {
+      fillColor: getColorForLF(parasites),
+      weight: 0.5,
+      color: '#000000',
+      fillOpacity: 0.3
+    };
+  }
+
+  // Add Legend
+  const LFLegend = L.control({ position: 'bottomright' });
+  LFLegend.onAdd = function (map) {
+  const div = L.DomUtil.create('div', 'info legend');
+  const LFColors = [
+      { species: "Brugia sp.", color: "#0010a3" },
+      { species: "Wuchereria bancrofti", color: "#c28e00" },
+      { species: "Brugia sp. & W. bancrofti", color: "#027d2d" }
+  ];
+  div.innerHTML = '<h4>Causes of Lymphatic Filariasis</h4>';
+  LFColors.forEach(entry => {
+      div.innerHTML += `<i style="background:${entry.color}; width: 18px; height: 18px; display: inline-block; margin-right: 8px;"></i>${entry.species}<br>`;
+  });
+  return div;
+  };
+
+  // Create Layer
+  const geojsonLayerLF = L.geoJSON(data, {
+  style: styleByLF,
+  onEachFeature: (feature, layer) => {
+  const countryName = feature.properties.ADMIN || "Unknown Country";
+  const parasites = feature.properties.endemicParasites || [];
+  const parasiteList = parasites.length > 0 ? `<ul>${parasites.map(p => `<li>${p}</li>`).join('')}</ul>` : 'No endemic parasites listed.';
+      
+  layer.bindPopup(`<strong>${countryName}</strong><br>Click for more details.`);
+  layer.on('click', () => {
+    const details = `<h3>${countryName}</h3>
+      <p><strong>Endemic Parasites:</strong> ${parasiteList}</p>`;
+    layer.bindPopup(details).openPopup();
+  });
+
+  }}).on('add', () => {
+  LFLegend.addTo(map); 
+  }).on('remove', () => {
+  map.removeControl(LFLegend);
+  });
 
 // LAYER CONTROL
     L.control.layers({
@@ -244,7 +296,8 @@
       "Ascaris": geojsonLayerAscaris,
       "Schistosoma": geojsonLayerSchisto,
       "Strongyloides": geojsonLayerStrongyloides,
-      "Tissue Roundworms": geojsonLayerRoundworm
+      "Lymphatic Filariasis": geojsonLayerLF,
+      "Other Tissue Roundworms": geojsonLayerRoundworm
     }).addTo(map);
 
 })
