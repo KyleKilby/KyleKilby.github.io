@@ -43,7 +43,7 @@
 // STRONGYLOIDES
     // Assign Colour
     const getColorForStrongyloides = (parasites) => {
-      return parasites.includes("Strongyloides stercoralis") ? "#fa0000" : "#fafafa";
+      return parasites.includes("Strongyloides stercoralis") ? "#004702" : "#fafafa";
     };
 
     // Define Layer Style
@@ -138,7 +138,6 @@
     const RoundwormColors = [
         { species: "Dracunculus medinensis", color: "#c28e00" },
         { species: "Trichinella species", color: "#662937" },
-        { species: "Loa loa", color: "#FD9DB1" },
         { species: "Onchocerca volvulus", color: "#83FEE7" },
         { species: "Ancylostoma braziliense", color: "#E86D07" },
         { species: "Toxocara species", color: "#DED8F8" },
@@ -290,13 +289,49 @@
   map.removeControl(LFLegend);
   });
 
+//LOA LOA
+    // Asign Colour
+    const getColorForLoa = (parasites) => {
+      return parasites.includes("Loa loa") ? "#004702" : "#fafafa";
+    };
+
+    // Define Layer Style
+    const styleByLoa = (feature) => {
+      const parasites = feature.properties.endemicParasites || [];
+      return {
+        fillColor: getColorForLoa(parasites),
+        weight: 0.5,
+        color: '#000000',
+        fillOpacity: 0.3
+      };
+    };
+
+    // Create Layer
+    const geojsonLayerLoa = L.geoJSON(data, {
+      style: styleByLoa,
+      onEachFeature: (feature, layer) => {
+        const countryName = feature.properties.ADMIN || "Unknown Country";
+        const parasites = feature.properties.endemicParasites || [];
+        const parasiteList = parasites.length > 0 ? `<ul>${parasites.map(p => `<li>${p}</li>`).join('')}</ul>` : 'No endemic parasites listed.';
+        
+        layer.bindPopup(`<strong>${countryName}</strong><br>Click for more details.`);
+        layer.on('click', () => {
+          const details = `<h3>${countryName}</h3>
+            <p><strong>Endemic Parasites:</strong> ${parasiteList}</p>`;
+          layer.bindPopup(details).openPopup();
+      });
+    }});
+
+
+
 // LAYER CONTROL
     L.control.layers({
       "Default": geojsonLayer,
-      "Ascaris": geojsonLayerAscaris,
-      "Schistosoma": geojsonLayerSchisto,
-      "Strongyloides": geojsonLayerStrongyloides,
+      "Ascariasis": geojsonLayerAscaris,
+      "Schistosomiasis": geojsonLayerSchisto,
+      "Strongyloidiasis": geojsonLayerStrongyloides,
       "Lymphatic Filariasis": geojsonLayerLF,
+      "Loiasis": geojsonLayerLoa,
       "Other Tissue Roundworms": geojsonLayerRoundworm
     }).addTo(map);
 
