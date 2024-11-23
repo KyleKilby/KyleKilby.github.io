@@ -113,7 +113,6 @@
     const getColorForRoundworm = (parasites) => {
         if (parasites.includes("Trichinella species")) {return "#662937";}
         if (parasites.includes("Dracunculus medinensis")) {return "#c28e00";}
-        if (parasites.includes("Loa loa")) {return "#FD9DB1";} 
         if (parasites.includes("Onchocerca volvulus")) {return "#83FEE7";}  
         if (parasites.includes("Ancylostoma braziliense")) {return "#E86D07";} 
         if (parasites.includes("Toxocara species")) {return "#DED8F8";} 
