@@ -1,7 +1,7 @@
 //CREATE MAP  
   const map = L.map('map', {
     center: [20,0],
-    zoom: 2,
+    zoom: 2.4,
     worldCopyJump: false
   });
    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', 
@@ -60,6 +60,19 @@
       };
     };
 
+    // Create Link
+    const StrongyLink = L.control({ position: 'bottomleft' });
+    StrongyLink.onAdd = function (map) {
+    const div = L.DomUtil.create('div', 'info link');
+    div.innerHTML = '<a href="https://www.cdc.gov/dpdx/strongyloidiasis/index.html" target="_blank" style="color: black; font-size: 18px; text-decoration: none;">CDC DPDx: Strongyloidiasis</a>';
+    div.style.border = "2px solid black"; 
+    div.style.backgroundColor = 'white';  
+    div.style.padding = '10px';  
+    div.style.borderRadius = '5px';  
+    div.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.2)'; 
+    return div;
+    };
+
     // Create Layer
     const geojsonLayerStrongyloides = L.geoJSON(data, {
       style: styleByStrongyloides,
@@ -75,7 +88,11 @@
           layer.bindPopup(details).openPopup();
         });
       }
-    });
+    }).on('add', () => {
+      StrongyLink.addTo(map); 
+    }).on('remove', () => {
+      map.removeControl(StrongyLink);
+    }) 
 
   
 //ASCARIS
@@ -95,6 +112,19 @@
       };
     };
 
+    // Create Link
+    const AscarisLink = L.control({ position: 'bottomleft' });
+    AscarisLink.onAdd = function (map) {
+    const div = L.DomUtil.create('div', 'info link');
+    div.innerHTML = '<a href="https://www.cdc.gov/dpdx/ascariasis/index.html" target="_blank" style="color: black; font-size: 18px; text-decoration: none;">CDC DPDx: Ascariasis</a>';
+    div.style.border = "2px solid black"; 
+    div.style.backgroundColor = 'white';  
+    div.style.padding = '10px';  
+    div.style.borderRadius = '5px';  
+    div.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.2)'; 
+    return div;
+    };
+
     // Create Layer
     const geojsonLayerAscaris = L.geoJSON(data, {
       style: styleByAscaris,
@@ -109,12 +139,16 @@
             <p><strong>Endemic Parasites:</strong> ${parasiteList}</p>`;
           layer.bindPopup(details).openPopup();
       });
-    }});
+    }}).on('add', () => {
+      AscarisLink.addTo(map); 
+    }).on('remove', () => {
+      map.removeControl(AscarisLink);
+    }) 
 
-//Dracunculus
+//DRACUNCULUS
     // Assign colours
     const getColorForDrac = (parasites) => {
-        if (parasites.includes("Dracunculus medinensis")) {return "#662937";}
+        if (parasites.includes("Dracunculus medinensis")) {return "#004702";}
         return "#fafafa"; // Default
     };
 
@@ -128,6 +162,19 @@
         fillOpacity: 0.3
       };
     }
+
+    // Create Link
+    const DracLink = L.control({ position: 'bottomleft' });
+    DracLink.onAdd = function (map) {
+    const div = L.DomUtil.create('div', 'info link');
+    div.innerHTML = '<a href="https://www.cdc.gov/dpdx/dracunculiasis/index.html" target="_blank" style="color: black; font-size: 18px; text-decoration: none;">CDC DPDx: Dracunculiasis</a>';
+    div.style.border = "2px solid black"; 
+    div.style.backgroundColor = 'white';  
+    div.style.padding = '10px';  
+    div.style.borderRadius = '5px';  
+    div.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.2)'; 
+    return div;
+    };
 
     // Create Layer
     const geojsonLayerDrac = L.geoJSON(data, {
@@ -144,7 +191,11 @@
       layer.bindPopup(details).openPopup();
     });
 
-    }})
+    }}).on('add', () => {
+      DracLink.addTo(map); 
+    }).on('remove', () => {
+      map.removeControl(DracLink);
+    }); 
 
 //SHISTO
     // Assign colours
@@ -167,7 +218,19 @@
       fillOpacity: 0.3
     };
   }
-
+  // Create Link
+    const SchistoLink = L.control({ position: 'bottomleft' });
+    SchistoLink.onAdd = function (map) {
+    const div = L.DomUtil.create('div', 'info link');
+    div.innerHTML = '<a href="https://www.cdc.gov/dpdx/schistosomiasis/index.html" target="_blank" style="color: black; font-size: 18px; text-decoration: none;">CDC DPDx: Schistosomiasis</a>';
+    div.style.border = "2px solid black"; 
+    div.style.backgroundColor = 'white';  
+    div.style.padding = '10px';  
+    div.style.borderRadius = '5px';  
+    div.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.2)'; 
+    return div;
+    };
+  
   // Add Legend
   const schistoLegend = L.control({ position: 'bottomright' });
   schistoLegend.onAdd = function (map) {
@@ -179,10 +242,15 @@
       { species: "Schistosoma mekongi", color: "#ff3842" },
       { species: "Schistosoma japonicum", color: "#460f5c" }
   ];
-  div.innerHTML = '<h4>Schistosoma Species</h4>';
+  div.innerHTML = '<h3>Schistosoma Species</h3>';
   schistoColors.forEach(entry => {
       div.innerHTML += `<i style="background:${entry.color}; width: 18px; height: 18px; display: inline-block; margin-right: 8px;"></i>${entry.species}<br>`;
-  });
+      div.style.border = "2px solid black"; 
+      div.style.backgroundColor = 'white';  
+      div.style.padding = '10px';  
+      div.style.borderRadius = '5px';  
+      div.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.2)'; 
+    });
   return div;
   };
 
@@ -205,7 +273,11 @@
   schistoLegend.addTo(map); 
   }).on('remove', () => {
   map.removeControl(schistoLegend);
-  });
+  }).on('add', () => {
+    SchistoLink.addTo(map); 
+  }).on('remove', () => {
+    map.removeControl(SchistoLink);
+  }) 
 
 //LYMPHATIC FILARIASIS
     // Assign colours
@@ -237,10 +309,28 @@
       { species: "Wuchereria bancrofti", color: "#c28e00" },
       { species: "Brugia spp. & W. bancrofti", color: "#027d2d" }
   ];
-  div.innerHTML = '<h4>Causes of Lymphatic Filariasis</h4>';
+  div.innerHTML = '<h3>Causes of Lymphatic Filariasis</h3>';
   LFColors.forEach(entry => {
       div.innerHTML += `<i style="background:${entry.color}; width: 18px; height: 18px; display: inline-block; margin-right: 8px;"></i>${entry.species}<br>`;
+      div.style.border = "2px solid black"; 
+      div.style.backgroundColor = 'white';  
+      div.style.padding = '10px';  
+      div.style.borderRadius = '5px';  
+      div.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.2)'; 
   });
+  return div;
+  };
+
+  // Create Link
+  const LFLink = L.control({ position: 'bottomleft' });
+  LFLink.onAdd = function (map) {
+  const div = L.DomUtil.create('div', 'info link');
+  div.innerHTML = '<a href="https://www.cdc.gov/dpdx/lymphaticfilariasis/index.html" target="_blank" style="color: black; font-size: 18px; text-decoration: none;">CDC DPDx: Lymphatic Filariasis</a>';
+  div.style.border = "2px solid black"; 
+  div.style.backgroundColor = 'white';  
+  div.style.padding = '10px';  
+  div.style.borderRadius = '5px';  
+  div.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.2)'; 
   return div;
   };
 
@@ -263,7 +353,11 @@
   LFLegend.addTo(map); 
   }).on('remove', () => {
   map.removeControl(LFLegend);
-  });
+  }).on('add', () => {
+    LFLink.addTo(map); 
+  }).on('remove', () => {
+    map.removeControl(LFLink);
+  }); 
 
 //ONCHOCERCA
     // Asign Colour
@@ -282,6 +376,19 @@
       };
     };
 
+    // Create Link
+    const RBLink = L.control({ position: 'bottomleft' });
+    RBLink.onAdd = function (map) {
+    const div = L.DomUtil.create('div', 'info link');
+    div.innerHTML = '<a href="https://www.cdc.gov/dpdx/onchocerciasis/index.html" target="_blank" style="color: black; font-size: 18px; text-decoration: none;">CDC DPDx: Onchocerciasis</a>';
+    div.style.border = "2px solid black"; 
+    div.style.backgroundColor = 'white';  
+    div.style.padding = '10px';  
+    div.style.borderRadius = '5px';  
+    div.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.2)'; 
+    return div;
+    };
+
     // Create Layer
     const geojsonLayerRB = L.geoJSON(data, {
       style: styleByRB,
@@ -296,7 +403,11 @@
             <p><strong>Endemic Parasites:</strong> ${parasiteList}</p>`;
           layer.bindPopup(details).openPopup();
       });
-    }});
+    }}).on('add', () => {
+      RBLink.addTo(map); 
+    }).on('remove', () => {
+      map.removeControl(RBLink);
+    }); 
 
 //LOA LOA
     // Asign Colour
@@ -315,6 +426,19 @@
       };
     };
 
+    // Create Link
+    const LoaLink = L.control({ position: 'bottomleft' });
+    LoaLink.onAdd = function (map) {
+    const div = L.DomUtil.create('div', 'info link');
+    div.innerHTML = '<a href="https://www.cdc.gov/dpdx/loiasis/index.html" target="_blank" style="color: black; font-size: 18px; text-decoration: none;">CDC DPDx: Loaiasis</a>';
+    div.style.border = "2px solid black"; 
+    div.style.backgroundColor = 'white';  
+    div.style.padding = '10px';  
+    div.style.borderRadius = '5px';  
+    div.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.2)'; 
+    return div;
+    };
+
     // Create Layer
     const geojsonLayerLoa = L.geoJSON(data, {
       style: styleByLoa,
@@ -329,7 +453,11 @@
             <p><strong>Endemic Parasites:</strong> ${parasiteList}</p>`;
           layer.bindPopup(details).openPopup();
       });
-    }});
+    }}).on('add', () => {
+      LoaLink.addTo(map); 
+    }).on('remove', () => {
+      map.removeControl(LoaLink);
+    }); 
 
 //ECHINOCOCCUS
     // Assign colours
@@ -360,12 +488,30 @@
       { species: "Echinococcus multilocularis", color: "#c28e00" },
       { species: "Both E. granulosus & E. multilocularis", color: "#027d2d" }
   ];
-    div.innerHTML = '<h4>Echinococcal Species</h4>';
+    div.innerHTML = '<h3>Echinococcus Species</h3>';
     EchinoColors.forEach(entry => {
       div.innerHTML += `<i style="background:${entry.color}; width: 18px; height: 18px; display: inline-block; margin-right: 8px;"></i>${entry.species}<br>`;
+      div.style.border = "2px solid black"; 
+      div.style.backgroundColor = 'white';  
+      div.style.padding = '10px';  
+      div.style.borderRadius = '5px';  
+      div.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.2)'; 
   });
      return div;
   };
+
+    // Create Link
+    const EchinoLink = L.control({ position: 'bottomleft' });
+    EchinoLink.onAdd = function (map) {
+    const div = L.DomUtil.create('div', 'info link');
+    div.innerHTML = '<a href="https://www.cdc.gov/dpdx/echinococcosis/index.html" target="_blank" style="color: black; font-size: 18px; text-decoration: none;">CDC DPDx: Echinococcosis</a>';
+    div.style.border = "2px solid black"; 
+    div.style.backgroundColor = 'white';  
+    div.style.padding = '10px';  
+    div.style.borderRadius = '5px';  
+    div.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.2)'; 
+    return div;
+    };
 
     // Create Layer
     const geojsonLayerEchino = L.geoJSON(data, {
@@ -386,7 +532,11 @@
     EchinoLegend.addTo(map); 
   }).on('remove', () => {
     map.removeControl(EchinoLegend);
-  });
+  }).on('add', () => {
+    EchinoLink.addTo(map); 
+  }).on('remove', () => {
+    map.removeControl(EchinoLink);
+  }) 
 
 //INTESTINAL FLUKES
     // Assign colours
@@ -426,12 +576,34 @@
       { species: "F. buski, H. heterophyes & M. yokogawai", color: "#011c08" }
 
   ];
-    div.innerHTML = '<h4>Intestinal Flukes</h4>';
+    div.innerHTML = '<h3>Intestinal Flukes</h3>';
     IFColors.forEach(entry => {
       div.innerHTML += `<i style="background:${entry.color}; width: 18px; height: 18px; display: inline-block; margin-right: 8px;"></i>${entry.species}<br>`;
+      div.style.border = "2px solid black"; 
+      div.style.backgroundColor = 'white';  
+      div.style.padding = '10px';  
+      div.style.borderRadius = '5px';  
+      div.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.2)'; 
   });
      return div;
   };
+
+    // Create Link
+    const IFLink = L.control({ position: 'bottomleft' });
+    IFLink.onAdd = function (map) {
+    const div = L.DomUtil.create('div', 'info link');
+    div.innerHTML = `
+        <a href="https://www.cdc.gov/dpdx/fasciolopsiasis/index.html" target="_blank" style="color: black; font-size: 18px; text-decoration: none; display: block;">CDC DPDx: Fasciolopsiasis</a>
+        <a href="https://www.cdc.gov/dpdx/heterophyiasis/index.html" target="_blank" style="color: black; font-size: 18px; text-decoration: none; display: block;">CDC DPDx: Heterophyiasis</a>
+        <a href="https://www.cdc.gov/dpdx/metagonimiasis/index.html" target="_blank" style="color: black; font-size: 18px; text-decoration: none; display: block;">CDC DPDx: Metagonimiasis</a>
+    `;
+    div.style.border = "2px solid black"; 
+    div.style.backgroundColor = 'white';  
+    div.style.padding = '10px';  
+    div.style.borderRadius = '5px';  
+    div.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.2)'; 
+    return div;
+    };
 
     // Create Layer
     const geojsonLayerIF = L.geoJSON(data, {
@@ -452,6 +624,10 @@
     IFLegend.addTo(map); 
   }).on('remove', () => {
     map.removeControl(IFLegend);
+  }).on('add', () => {
+    IFLink.addTo(map); 
+  }).on('remove', () => {
+    map.removeControl(IFLink);
   });
 
 //OTHER LIVER FLUKES
@@ -483,12 +659,33 @@
       { species: "Opisthorchis spp.", color: "#0010a3" },
       { species: "Both C. sinensis & O. viverrini", color: "#027d2d" }
   ];
-    div.innerHTML = '<h4>Liver Flukes</h4>';
+    div.innerHTML = '<h3>Liver Flukes</h3>';
     LiverColors.forEach(entry => {
       div.innerHTML += `<i style="background:${entry.color}; width: 18px; height: 18px; display: inline-block; margin-right: 8px;"></i>${entry.species}<br>`;
+      div.style.border = "2px solid black"; 
+      div.style.backgroundColor = 'white';  
+      div.style.padding = '10px';  
+      div.style.borderRadius = '5px';  
+      div.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.2)'; 
   });
      return div;
   };
+
+    // Create Link
+    const LiverLink = L.control({ position: 'bottomleft' });
+    LiverLink.onAdd = function (map) {
+    const div = L.DomUtil.create('div', 'info link');
+    div.innerHTML = `
+    <a href="https://www.cdc.gov/dpdx/clonorchiasis/index.html" target="_blank" style="color: black; font-size: 18px; text-decoration: none; display: block;">CDC DPDx: Clonorchiasis</a>
+    <a href="https://www.cdc.gov/dpdx/opisthorchiasis/index.html" target="_blank" style="color: black; font-size: 18px; text-decoration: none; display: block;">CDC DPDx: Opisthorchiasis</a>
+    `;
+    div.style.border = "2px solid black"; 
+    div.style.backgroundColor = 'white';  
+    div.style.padding = '10px';  
+    div.style.borderRadius = '5px';  
+    div.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.2)'; 
+    return div;
+    };
 
     // Create Layer
     const geojsonLayerLiver = L.geoJSON(data, {
@@ -509,6 +706,10 @@
     LiverLegend.addTo(map); 
   }).on('remove', () => {
     map.removeControl(LiverLegend);
+  }).on('add', () => {
+    LiverLink.addTo(map); 
+  }).on('remove', () => {
+    map.removeControl(LiverLink);
   });
 
 //FASCIOLA
@@ -540,12 +741,30 @@
       { species: "Fasciola hepatica", color: "#0010a3" },
       { species: "Both F. gigantica & F. hepatica", color: "#027d2d" }
   ];
-    div.innerHTML = '<h4>Fasciola Species</h4>';
+    div.innerHTML = '<h3>Fasciola Species</h3>';
     FascColors.forEach(entry => {
       div.innerHTML += `<i style="background:${entry.color}; width: 18px; height: 18px; display: inline-block; margin-right: 8px;"></i>${entry.species}<br>`;
+      div.style.border = "2px solid black"; 
+      div.style.backgroundColor = 'white';  
+      div.style.padding = '10px';  
+      div.style.borderRadius = '5px';  
+      div.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.2)'; 
   });
      return div;
   };
+
+    // Create Link
+    const FascLink = L.control({ position: 'bottomleft' });
+    FascLink.onAdd = function (map) {
+    const div = L.DomUtil.create('div', 'info link');
+    div.innerHTML = '<a href="https://www.cdc.gov/dpdx/fascioliasis/index.html" target="_blank" style="color: black; font-size: 18px; text-decoration: none;">CDC DPDx: Fascioliasis</a>';
+    div.style.border = "2px solid black"; 
+    div.style.backgroundColor = 'white';  
+    div.style.padding = '10px';  
+    div.style.borderRadius = '5px';  
+    div.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.2)'; 
+    return div;
+    };
 
     // Create Layer
     const geojsonLayerFasc = L.geoJSON(data, {
@@ -566,7 +785,11 @@
     FascLegend.addTo(map); 
   }).on('remove', () => {
     map.removeControl(FascLegend);
-  });
+  }).on('add', () => {
+    FascLink.addTo(map); 
+  }).on('remove', () => {
+    map.removeControl(FascLink);
+  }); 
 
 //PARAGONIMUS
     // Asign Colour
@@ -584,6 +807,17 @@
         fillOpacity: 0.3
       };
     };
+    // Create Link
+    const ParaLink = L.control({ position: 'bottomleft' });
+    ParaLink.onAdd = function (map) {
+    const div = L.DomUtil.create('div', 'info link');
+    div.innerHTML = '<a href="https://www.cdc.gov/dpdx/paragonimiasis/index.html" target="_blank" style="color: black; font-size: 18px; text-decoration: none;">CDC DPDx: Paragonimiasis</a>';
+    div.style.backgroundColor = 'white';  
+    div.style.padding = '10px';  
+    div.style.borderRadius = '5px';  
+    div.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.2)'; 
+    return div;
+    };
 
     // Create Layer
     const geojsonLayerPara = L.geoJSON(data, {
@@ -599,27 +833,29 @@
             <p><strong>Endemic Parasites:</strong> ${parasiteList}</p>`;
           layer.bindPopup(details).openPopup();
       });
-    }});
-
-
+    }}).on('add', () => {
+      ParaLink.addTo(map); 
+    }).on('remove', () => {
+      map.removeControl(ParaLink);
+    }); 
+   
 // LAYER CONTROL
     L.control.layers({
       "Default": geojsonLayer,
-      "Ascariasis": geojsonLayerAscaris,
-      "Dracunculiasis": geojsonLayerDrac,
-      "Echinococciasis": geojsonLayerEchino,
-      "Fascioliasis": geojsonLayerFasc,
-      "Loiasis": geojsonLayerLoa,
-      "Lymphatic Filariasis": geojsonLayerLF,
-      "Paragonimiasis": geojsonLayerPara,
-      "River Blindness": geojsonLayerRB,
-      "Schistosomiasis": geojsonLayerSchisto,
-      "Strongyloidiasis": geojsonLayerStrongyloides,
-      "Other Intestinal Flukes": geojsonLayerIF,
-      "Other Liver Flukes": geojsonLayerLiver
+      "Ascarias": geojsonLayerAscaris,
+      "Dracunculus": geojsonLayerDrac,
+      "Echinococcus": geojsonLayerEchino,
+      "Fasciola": geojsonLayerFasc,
+      "Loa Loa": geojsonLayerLoa,
+      "Lymphatic Filariasis": geojsonLayerLF,      
+      "Onchocerca": geojsonLayerRB,
+      "Paragonimus": geojsonLayerPara,
+      "Schistosoma": geojsonLayerSchisto,
+      "Strongyloides": geojsonLayerStrongyloides,
+      "Intestinal Flukes": geojsonLayerIF,
+      "Liver Flukes": geojsonLayerLiver
     }).addTo(map);
 
 })
-
 
 .catch(error => console.error('Error loading GeoJSON:', error));
